@@ -199,14 +199,14 @@
 
           <div class="upload-wrap">
             <label>Hero Background Photo</label>
-            <input type="file" accept="image/*" capture="environment" data-upload-target="heroBackground">
+            <input type="file" accept="image/*" data-upload-target="heroBackground">
             <input id="heroBackground" name="heroBackground" placeholder="Image URL or data URL">
             <img id="heroBackgroundThumb" class="thumb" alt="Hero Background Preview">
           </div>
 
           <div class="upload-wrap">
             <label>Why Section Background Photo</label>
-            <input type="file" accept="image/*" capture="environment" data-upload-target="whyBackground">
+            <input type="file" accept="image/*" data-upload-target="whyBackground">
             <input id="whyBackground" name="whyBackground" placeholder="Image URL or data URL">
             <img id="whyBackgroundThumb" class="thumb" alt="Why Background Preview">
           </div>
@@ -230,8 +230,8 @@
           </div>
 
           <div class="upload-wrap">
-            <label>Profile Photo (phone upload supported)</label>
-            <input type="file" accept="image/*" capture="environment" data-upload-target="photo">
+            <label>Profile Photo (gallery upload)</label>
+            <input type="file" accept="image/*" data-upload-target="photo">
             <input id="photo" name="photo" placeholder="https://... or data:image/...">
             <img id="photoThumb" class="thumb" alt="Profile Photo Preview">
           </div>
@@ -296,7 +296,7 @@
             thumb.src = dataUrl;
             thumb.style.display = "block";
           }
-          status("status", "Image loaded from phone successfully.");
+          status("status", "Image loaded from gallery successfully.");
         } catch (err) {
           status("status", err.message || "Image upload failed.", true);
         }
