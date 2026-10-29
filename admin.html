@@ -252,6 +252,26 @@
   <script>
     const $ = (id) => document.getElementById(id);
     let token = sessionStorage.getItem("sfu_admin_token") || "";
+    const MAX_PROFILE_PHOTO_BYTES = 500000;
+    const MAX_BACKGROUND_IMAGE_BYTES = 1200000;
+
+    function estimateDataUrlBytes(dataUrl) {
+      if (!dataUrl || typeof dataUrl !== "string") return 0;
+      if (!dataUrl.startsWith("data:")) return 0;
+      return Math.ceil((dataUrl.length * 3) / 4);
+    }
+
+    function validateImageInput(value, maxBytes, label) {
+      if (!value) return value;
+      const trimmed = String(value).trim();
+      if (/^https?:\/\//i.test(trimmed)) return trimmed;
+      if (!trimmed.startsWith("data:image/")) return trimmed;
+      const size = estimateDataUrlBytes(trimmed);
+      if (size > maxBytes) {
+        throw new Error(`${label} must be ${Math.round(maxBytes / 1000)} KB or smaller.`);
+      }
+      return trimmed;
+    }
 
     function status(id, msg, error = false) {
       const el = $(id);
@@ -288,7 +308,16 @@
         const file = input.files && input.files[0];
         if (!file) return;
         try {
+          const max = target === "photo" ? MAX_PROFILE_PHOTO_BYTES : MAX_BACKGROUND_IMAGE_BYTES;
+          const label = target === "photo" ? "Profile photo" : "Background image";
+          if (file.size > max) {
+            throw new Error(`${label} must be ${Math.round(max / 1000)} KB or smaller.`);
+          }
           const dataUrl = await readFileAsDataUrl(file);
+          const size = estimateDataUrlBytes(dataUrl);
+          if (size > max) {
+            throw new Error(`${label} must be ${Math.round(max / 1000)} KB or smaller.`);
+          }
           const targetInput = document.getElementById(target);
           if (targetInput) targetInput.value = dataUrl;
           const thumb = document.getElementById(target + "Thumb");
@@ -296,9 +325,17 @@
             thumb.src = dataUrl;
             thumb.style.display = "block";
           }
-          status("status", "Image loaded from gallery successfully.");
+          status("status", `${label} loaded successfully.`);
         } catch (err) {
           status("status", err.message || "Image upload failed.", true);
+          const targetInput = document.getElementById(target);
+          if (targetInput) targetInput.value = "";
+          const thumb = document.getElementById(target + "Thumb");
+          if (thumb) {
+            thumb.style.display = "none";
+            thumb.src = "";
+          }
+          input.value = "";
         }
       });
     }
@@ -401,6 +438,8 @@
         if (el.name) settings[el.name] = el.value;
       }
       try {
+        settings.heroBackground = validateImageInput(settings.heroBackground, MAX_BACKGROUND_IMAGE_BYTES, "Hero background image");
+        settings.whyBackground = validateImageInput(settings.whyBackground, MAX_BACKGROUND_IMAGE_BYTES, "Why background image");
         await api("/api/admin/settings", {
           method: "PUT",
           body: JSON.stringify({ settings })
@@ -419,6 +458,7 @@
         p[key] = f.elements.namedItem(key)?.value || "";
       }
       try {
+        p.photo = validateImageInput(p.photo, MAX_PROFILE_PHOTO_BYTES, "Profile photo");
         await api("/api/admin/profiles", {
           method: "PUT",
           body: JSON.stringify({ profile: p })
