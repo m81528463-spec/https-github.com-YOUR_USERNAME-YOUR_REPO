@@ -8,6 +8,8 @@ directory = "."
 binding = "ASSETS"
 run_worker_first = ["/api/*"]
 
-# SAFETY: Add only a dedicated TEST KV namespace here.
-# Do not paste a Production namespace ID. Admin dashboard data will not load
-# until SFU_DATA is bound to the correct test namespace in Cloudflare.
+# Test-only branch config. Production Worker is already bound to a live SFU_DATA namespace.
+# Keep this separate from production and verify the intended namespace before deployment.
+[[kv_namespaces]]
+binding = "SFU_DATA"
+id = "65afcc5931c64226bd829eaaa83a341a"
