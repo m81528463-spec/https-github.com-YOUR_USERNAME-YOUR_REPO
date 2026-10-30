@@ -26,3 +26,12 @@ IMPORTANT SAFETY:
 
 
 పరిష్కార ప్యాచ్ (Test ZIP మాత్రమే): Adminలో 5 profile photos, About/second-page backgrounds KVలో save అవుతాయి; homepage మరియు booking page /api/data నుంచి profile names/photos/settings చదువుతాయి. Live websiteకు deploy చేయలేదు. wrangler.tomlలో SFU_DATA test KV bindingను Cloudflare dashboardలో జతచేయాలి.
+
+
+తాజా Homepage Photo Fix:
+- మొదటి పేజీలో Admin నుంచి సేవ్ చేసిన Active Profiles మాత్రమే API ద్వారా చూపబడతాయి.
+- ప్రతి Profile card లో Admin లో సేవ్ చేసిన మొదటి ఫోటో కనిపిస్తుంది.
+- Hardcoded sample names / stock-photo placeholders తొలగించబడ్డాయి.
+- ఫోటోలు browser localStorage లో సేవ్ కావు; Worker API ద్వారా Cloudflare KV (SFU_DATA, site-data) లో సేవ్ అవుతాయి.
+- మొదటి పేజీ /api/data నుంచి KV డేటాను చదువుతుంది.
+- ఇది Test package మాత్రమే. Production Worker, production KV, live website లేదా GitHub లో ఏ మార్పూ చేయలేదు.
