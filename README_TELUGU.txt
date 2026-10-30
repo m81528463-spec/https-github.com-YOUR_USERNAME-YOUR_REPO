@@ -23,3 +23,6 @@ IMPORTANT SAFETY:
 - It has NOT changed Production, DNS, secrets, KV bindings, or KV data.
 - Do not deploy this package to Production until tested against a separate test Worker and test KV namespace.
 - Admin background image fields are stored in the same site-data KV record as the rest of the website data. Use compressed photos and keep the number of large photos limited.
+
+
+పరిష్కార ప్యాచ్ (Test ZIP మాత్రమే): Adminలో 5 profile photos, About/second-page backgrounds KVలో save అవుతాయి; homepage మరియు booking page /api/data నుంచి profile names/photos/settings చదువుతాయి. Live websiteకు deploy చేయలేదు. wrangler.tomlలో SFU_DATA test KV bindingను Cloudflare dashboardలో జతచేయాలి.

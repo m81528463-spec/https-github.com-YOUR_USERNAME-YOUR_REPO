@@ -66,8 +66,8 @@ export default {
      if(url.pathname==="/api/admin/settings"&&request.method==="PUT") {
       let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,h);}
       const data=await getData(env), incoming=body.settings||{};
-      const allowed=["brand","heroEyebrow","heroTitle","heroDescription","whyTitle","whyDescription","heroButton","seoTitle","seoDescription","canonical","heroBackground","whyBackground","heroImage","whyImage","contactPhone","contactWhatsApp","contactEmail"];
-      const imageKeys=new Set(["heroBackground","whyBackground","heroImage","whyImage"]);
+      const allowed=["brand","heroEyebrow","heroTitle","heroDescription","whyTitle","whyDescription","heroButton","seoTitle","seoDescription","canonical","heroBackground","whyBackground","heroImage","whyImage","bookingHeroBackground","bookingExperienceBackground","bookingSectionBackground","contactPhone","contactWhatsApp","contactEmail"];
+      const imageKeys=new Set(["heroBackground","whyBackground","heroImage","whyImage","bookingHeroBackground","bookingExperienceBackground","bookingSectionBackground"]);
       for(const k of allowed)if(incoming[k]!==undefined){
        const value=String(incoming[k]??"");
        const limit=imageKeys.has(k)?700000:5000;
@@ -83,10 +83,16 @@ export default {
       if(request.method==="PUT") {
        const p=body.profile;
        if(!p||!String(p.id||"").trim()||!String(p.name||"").trim())return json({error:"Profile ID and name are required."},400,h);
-       const photo=String(p.photo||"");
-       if(photo.length>500000)return json({error:"Profile photo is too large. Please choose a smaller/compressed image."},413,h);
-       if(photo&&!(/^https:\/\//i.test(photo)||/^data:image\/(jpeg|png|webp);base64,/i.test(photo)))return json({error:"Use an HTTPS photo URL or JPEG, PNG or WebP image."},400,h);
-       const clean={id:String(p.id).slice(0,80),name:String(p.name).slice(0,100),location:String(p.location||"").slice(0,120),photo,description:String(p.description||"").slice(0,2000),phone:String(p.phone||"").slice(0,40),whatsapp:String(p.whatsapp||"").slice(0,40),active:p.active!==false,createdAt:p.createdAt||new Date().toISOString()};
+       const rawPhotos=Array.isArray(p.photos)?p.photos:[];
+       const photos=rawPhotos.slice(0,5).map(x=>String(x||""));
+       const legacyPhoto=String(p.photo||"");
+       if(!photos.some(Boolean)&&legacyPhoto)photos[0]=legacyPhoto;
+       for(const photo of photos){
+        if(photo.length>500000)return json({error:"Each profile photo must be compressed below 500 KB."},413,h);
+        if(photo&&!( /^https:\/\//i.test(photo)||/^data:image\/(jpeg|png|webp);base64,/i.test(photo)))return json({error:"Use HTTPS URLs or JPEG, PNG or WebP images for profile photos."},400,h);
+       }
+       const photo=photos.find(Boolean)||"";
+       const clean={id:String(p.id).slice(0,80),name:String(p.name).slice(0,100),location:String(p.location||"").slice(0,120),photo,photos,description:String(p.description||"").slice(0,2000),phone:String(p.phone||"").slice(0,40),whatsapp:String(p.whatsapp||"").slice(0,40),active:p.active!==false,createdAt:p.createdAt||new Date().toISOString()};
        const i=data.profiles.findIndex(x=>x.id===clean.id);if(i>=0)data.profiles[i]=clean;else data.profiles.push(clean);
       } else data.profiles=data.profiles.filter(p=>p.id!==String(body.id||""));
       await saveData(env,data);return json({ok:true,profiles:data.profiles},200,h);

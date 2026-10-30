@@ -88,7 +88,7 @@ textarea{min-height:110px}
 <section class="photo-finale" aria-label="Satisfaction for U editorial photo background"><div class="photo-finale-inner"><div class="kicker">Satisfaction for U</div><h2>Elegance. Confidence. Connection.</h2><p>Explore the sample profiles and send an enquiry for social occasions and events.</p><a href="#companions" class="btn solid">Explore Profiles</a></div></section>
 </main>
 <footer><a class="logo" href="#home">Satisfaction for U</a><p>Luxury-style directory demo · Sample content only · Adults 18+</p><!-- Admin access is intentionally hidden from the public navigation and footer. --><p style="margin-top:12px;font-size:.7rem">© <span id="year"></span> Satisfaction for U. Replace demo content before publishing.</p></footer>
-<div class="overlay" id="adminPanel" role="dialog" aria-modal="true"><div class="panel"><button class="close" id="adminClose" aria-label="Close">×</button><div class="kicker">Local demonstration only</div><h2>Admin login</h2><p class="notice">This is a front-end demo, not secure authentication. Do not use these credentials on a live website.</p><form id="adminForm"><input id="adminUser" placeholder="Username" autocomplete="username" required><input id="adminPass" type="password" placeholder="Password" autocomplete="current-password" required><button class="btn solid" type="submit">Sign in to demo</button><p id="adminResult" class="result" role="status"></p></form><p class="notice">Demo username: <b>admin</b><br>Demo password: <b>VelvetDemo2026!</b></p><div id="adminDashboard" hidden><hr style="border-color:var(--line);margin:18px 0"><h3>Demo dashboard</h3><p class="notice">Profiles: 6 sample entries<br>Enquiries: not stored<br>WhatsApp number is saved only in this browser on this device.</p><form id="whatsappSettings"><label for="whatsappNumber">Booking WhatsApp number (country code + number)</label><input id="whatsappNumber" type="tel" placeholder="91XXXXXXXXXX" inputmode="numeric" required><button class="btn solid" type="submit">Save WhatsApp Number</button><p id="whatsappStatus" class="result" role="status"></p></form><hr style="border-color:var(--line);margin:18px 0"><h3>Upload Website Photos</h3><p class="notice">Photos stay in this browser on this device. Until a photo is uploaded, its photo area remains blank.</p><div class="photo-admin-grid"><label class="upload-label">First page top background<input type="file" accept="image/*" data-photo="homeHero"></label><label class="upload-label">Agency photo<input type="file" accept="image/*" data-photo="aboutPhoto"></label><label class="upload-label">Isabella profile photo<input type="file" accept="image/*" data-photo="profile1"></label><label class="upload-label">Amara profile photo<input type="file" accept="image/*" data-photo="profile2"></label><label class="upload-label">Charlotte profile photo<input type="file" accept="image/*" data-photo="profile3"></label><label class="upload-label">Sofia profile photo<input type="file" accept="image/*" data-photo="profile4"></label><label class="upload-label">Naomi profile photo<input type="file" accept="image/*" data-photo="profile5"></label><label class="upload-label">Elena profile photo<input type="file" accept="image/*" data-photo="profile6"></label><label class="upload-label">First page bottom background<input type="file" accept="image/*" data-photo="homeBottom"></label><label class="upload-label">Second page top background<input type="file" accept="image/*" data-photo="bookingHero"></label><label class="upload-label">Second page Experience background<input type="file" accept="image/*" data-photo="experienceBg"></label><label class="upload-label">Second page Booking background<input type="file" accept="image/*" data-photo="bookingBg"></label></div><p id="photoStatus" class="result" role="status"></p><button class="btn" id="adminLogout" type="button">Log out</button></div></div></div>
+
 <script>
 
 const nav=document.getElementById('nav');
@@ -137,7 +137,8 @@ function applySettings(settings){
   if(hero&&heroPhoto)hero.style.backgroundImage='linear-gradient(rgba(255,240,246,.45),rgba(255,249,252,.88)),url("'+heroPhoto+'")';
   const aboutPhoto=safeImage(settings.whyBackground||settings.whyImage);
   const aboutImg=document.querySelector('.about-img img');
-  if(aboutImg&&aboutPhoto)aboutImg.src=aboutPhoto;
+  if(aboutImg&&aboutPhoto){aboutImg.src=aboutPhoto;const aboutFrame=aboutImg.closest('.about-img');if(aboutFrame)aboutFrame.classList.add('has-photo');}
+  if(about&&aboutPhoto)about.style.backgroundImage='linear-gradient(rgba(255,240,246,.76),rgba(255,240,246,.82)),url("'+aboutPhoto+'")';
   const phone=String(settings.contactPhone||'').replace(/\D/g,'');
   const whatsapp=String(settings.contactWhatsApp||'').replace(/\D/g,'');
   document.querySelectorAll('[data-contact]').forEach(link=>{
@@ -169,7 +170,7 @@ function renderProfiles(profiles){
     setText(title,name);setText(meta,location||'Profile');setText(paragraph,description);
     if(badge)badge.textContent='Profile';
     if(img){
-      const photo=safeImage(profile.photo);
+      const photo=safeImage((Array.isArray(profile.photos)?profile.photos.find(Boolean):'')||profile.photo);
       if(photo)img.src=photo;else img.removeAttribute('src');
       img.alt=name+' profile photo';
     }
