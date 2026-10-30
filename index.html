@@ -90,18 +90,132 @@ textarea{min-height:110px}
 <footer><a class="logo" href="#home">Satisfaction for U</a><p>Luxury-style directory demo · Sample content only · Adults 18+</p><!-- Admin access is intentionally hidden from the public navigation and footer. --><p style="margin-top:12px;font-size:.7rem">© <span id="year"></span> Satisfaction for U. Replace demo content before publishing.</p></footer>
 <div class="overlay" id="adminPanel" role="dialog" aria-modal="true"><div class="panel"><button class="close" id="adminClose" aria-label="Close">×</button><div class="kicker">Local demonstration only</div><h2>Admin login</h2><p class="notice">This is a front-end demo, not secure authentication. Do not use these credentials on a live website.</p><form id="adminForm"><input id="adminUser" placeholder="Username" autocomplete="username" required><input id="adminPass" type="password" placeholder="Password" autocomplete="current-password" required><button class="btn solid" type="submit">Sign in to demo</button><p id="adminResult" class="result" role="status"></p></form><p class="notice">Demo username: <b>admin</b><br>Demo password: <b>VelvetDemo2026!</b></p><div id="adminDashboard" hidden><hr style="border-color:var(--line);margin:18px 0"><h3>Demo dashboard</h3><p class="notice">Profiles: 6 sample entries<br>Enquiries: not stored<br>WhatsApp number is saved only in this browser on this device.</p><form id="whatsappSettings"><label for="whatsappNumber">Booking WhatsApp number (country code + number)</label><input id="whatsappNumber" type="tel" placeholder="91XXXXXXXXXX" inputmode="numeric" required><button class="btn solid" type="submit">Save WhatsApp Number</button><p id="whatsappStatus" class="result" role="status"></p></form><hr style="border-color:var(--line);margin:18px 0"><h3>Upload Website Photos</h3><p class="notice">Photos stay in this browser on this device. Until a photo is uploaded, its photo area remains blank.</p><div class="photo-admin-grid"><label class="upload-label">First page top background<input type="file" accept="image/*" data-photo="homeHero"></label><label class="upload-label">Agency photo<input type="file" accept="image/*" data-photo="aboutPhoto"></label><label class="upload-label">Isabella profile photo<input type="file" accept="image/*" data-photo="profile1"></label><label class="upload-label">Amara profile photo<input type="file" accept="image/*" data-photo="profile2"></label><label class="upload-label">Charlotte profile photo<input type="file" accept="image/*" data-photo="profile3"></label><label class="upload-label">Sofia profile photo<input type="file" accept="image/*" data-photo="profile4"></label><label class="upload-label">Naomi profile photo<input type="file" accept="image/*" data-photo="profile5"></label><label class="upload-label">Elena profile photo<input type="file" accept="image/*" data-photo="profile6"></label><label class="upload-label">First page bottom background<input type="file" accept="image/*" data-photo="homeBottom"></label><label class="upload-label">Second page top background<input type="file" accept="image/*" data-photo="bookingHero"></label><label class="upload-label">Second page Experience background<input type="file" accept="image/*" data-photo="experienceBg"></label><label class="upload-label">Second page Booking background<input type="file" accept="image/*" data-photo="bookingBg"></label></div><p id="photoStatus" class="result" role="status"></p><button class="btn" id="adminLogout" type="button">Log out</button></div></div></div>
 <script>
-const nav=document.getElementById('nav'),burger=document.getElementById('burger');burger.addEventListener('click',()=>{let o=nav.classList.toggle('open');burger.textContent=o?'×':'☰';burger.setAttribute('aria-expanded',String(o))});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');burger.textContent='☰';burger.setAttribute('aria-expanded','false')}));document.getElementById('year').textContent=new Date().getFullYear();
 
-const admin=document.getElementById('adminPanel');function showAdmin(e){e.preventDefault();admin.style.display='grid';document.getElementById('adminResult').textContent='';document.getElementById('adminUser').focus()}// Hidden admin demo access: use Ctrl+Shift+A on desktop, or open the page with #admin. This front-end demo is not secure authentication.
-document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='a'){e.preventDefault();admin.style.display='grid';document.getElementById('adminResult').textContent='';document.getElementById('adminUser').focus()}});if(location.hash==='#admin'){admin.style.display='grid';}document.getElementById('adminClose').onclick=()=>admin.style.display='none';admin.addEventListener('click',e=>{if(e.target===admin)admin.style.display='none'});document.getElementById('adminForm').addEventListener('submit',e=>{e.preventDefault();if(document.getElementById('adminUser').value==='admin'&&document.getElementById('adminPass').value==='VelvetDemo2026!'){document.getElementById('adminResult').textContent='Demo login successful.';document.getElementById('adminDashboard').hidden=false;document.getElementById('whatsappNumber').value=localStorage.getItem('velvetNoirWhatsApp')||''}else document.getElementById('adminResult').textContent='Incorrect demo credentials.'});document.getElementById('whatsappSettings').addEventListener('submit',e=>{e.preventDefault();const n=document.getElementById('whatsappNumber').value.replace(/\D/g,'');if(n.length<10||n.length>15){document.getElementById('whatsappStatus').textContent='Enter a valid number with country code, digits only (e.g. 91XXXXXXXXXX).';return}localStorage.setItem('velvetNoirWhatsApp',n);document.getElementById('whatsappStatus').textContent='WhatsApp number saved in this browser.'});
-const photoKeys=['homeHero','aboutPhoto','profile1','profile2','profile3','profile4','profile5','profile6','homeBottom','bookingHero','experienceBg','bookingBg'];
-function applyPhoto(key,data){if(key==='homeHero'){const el=document.getElementById('home');el.style.backgroundImage=data?'linear-gradient(rgba(255,240,246,.45),rgba(255,249,252,.88)),url("'+data+'")':'linear-gradient(rgba(255,240,246,.45),rgba(255,249,252,.88))';el.classList.toggle('has-photo',!!data)}else if(key==='aboutPhoto'){const el=document.querySelector('.about-img');el.classList.toggle('has-photo',!!data);const im=el.querySelector('img');if(data)im.src=data;else im.removeAttribute('src')}else if(key.startsWith('profile')){const n=Number(key.replace('profile',''))-1;const el=document.querySelectorAll('.card-img')[n];if(el){el.classList.toggle('has-photo',!!data);const im=el.querySelector('img');if(data)im.src=data;else im.removeAttribute('src')}}else if(key==='homeBottom'){const el=document.querySelector('.photo-finale');el.style.backgroundImage=data?'linear-gradient(90deg,rgba(50,18,36,.66),rgba(80,23,53,.42)),url("'+data+'")':'linear-gradient(90deg,rgba(50,18,36,.66),rgba(80,23,53,.42))';el.classList.toggle('has-photo',!!data)}}
-function loadPhotos(){photoKeys.forEach(k=>{try{applyPhoto(k,localStorage.getItem('sfuPhoto_'+k)||'')}catch(e){applyPhoto(k,'')}})}
-function shrinkImage(file,done){const reader=new FileReader();reader.onload=()=>{const im=new Image();im.onload=()=>{const max=1500,scale=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*scale);c.height=Math.round(im.height*scale);c.getContext('2d').drawImage(im,0,0,c.width,c.height);done(c.toDataURL('image/jpeg',.78))};im.src=reader.result};reader.readAsDataURL(file)}
-document.querySelectorAll('[data-photo]').forEach(input=>input.addEventListener('change',()=>{const file=input.files&&input.files[0];if(!file)return;if(!file.type.startsWith('image/')){document.getElementById('photoStatus').textContent='Please choose an image file.';return}shrinkImage(file,data=>{try{localStorage.setItem('sfuPhoto_'+input.dataset.photo,data);applyPhoto(input.dataset.photo,data);document.getElementById('photoStatus').textContent='Photo updated: '+input.parentElement.firstChild.textContent.trim()}catch(e){document.getElementById('photoStatus').textContent='Image too large for this browser storage. Try a smaller photo.'}})}));loadPhotos();
-function configuredContactNumber(){return (localStorage.getItem('velvetNoirWhatsApp')||'').replace(/\D/g,'')}
-document.querySelectorAll('[data-contact]').forEach(link=>link.addEventListener('click',e=>{e.preventDefault();const n=configuredContactNumber();const profile=link.dataset.profile||'selected profile';if(!n){alert('Admin must set the Call/WhatsApp number first using the hidden demo admin settings.');return}if(link.dataset.contact==='call'){location.href='tel:+'+n}else{const msg='Hello Satisfaction for U, I am enquiring about the '+profile+' profile.';window.open('https://wa.me/'+n+'?text='+encodeURIComponent(msg),'_blank','noopener')}}));
-document.getElementById('adminLogout').addEventListener('click',()=>{document.getElementById('adminDashboard').hidden=true;document.getElementById('adminForm').reset();document.getElementById('adminResult').textContent='Logged out.'});document.addEventListener('keydown',e=>{if(e.key==='Escape'){admin.style.display='none';nav.classList.remove('open');burger.textContent='☰'}});
+const nav=document.getElementById('nav');
+const burger=document.getElementById('burger');
+if(burger&&nav){
+  burger.addEventListener('click',()=>{const open=nav.classList.toggle('open');burger.textContent=open?'×':'☰';burger.setAttribute('aria-expanded',String(open))});
+  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');burger.textContent='☰';burger.setAttribute('aria-expanded','false')}));
+}
+const year=document.getElementById('year');if(year)year.textContent=new Date().getFullYear();
 
-(function(){const root=document.documentElement;const btn=document.getElementById('themeToggle');function setTheme(t){root.dataset.theme=t;if(btn)btn.textContent=t==='dark'?'White mode':'Dark mode';try{localStorage.setItem('sfuColorTheme',t)}catch(e){}}let saved='light';try{saved=localStorage.getItem('sfuColorTheme')||'light'}catch(e){}setTheme(saved);if(btn)btn.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));})();
+(function(){
+  const root=document.documentElement,btn=document.getElementById('themeToggle');
+  function setTheme(t){root.dataset.theme=t;if(btn)btn.textContent=t==='dark'?'White mode':'Dark mode';try{localStorage.setItem('sfuColorTheme',t)}catch(e){}}
+  let saved='light';try{saved=localStorage.getItem('sfuColorTheme')||'light'}catch(e){}
+  setTheme(saved);if(btn)btn.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+})();
+
+const safeImage=value=>{
+  const v=String(value||'').trim();
+  return /^https:\/\/[^\s"'<>]+$/i.test(v)||/^data:image\/(jpeg|png|webp);base64,[a-z0-9+/=]+$/i.test(v)?v:'';
+};
+const setText=(el,value)=>{if(el&&value!==undefined&&value!==null&&String(value).trim()!=='')el.textContent=String(value)};
+function applySettings(settings){
+  if(!settings||typeof settings!=='object')return;
+  const logo=document.querySelector('.logo');
+  const hero=document.querySelector('.hero');
+  const heroInner=document.querySelector('.hero-inner');
+  setText(logo,settings.brand);
+  setText(heroInner&&heroInner.querySelector('.kicker'),settings.brand);
+  const eyebrow=heroInner&&heroInner.querySelector('p:not(.trust-line)');
+  setText(eyebrow,settings.heroEyebrow);
+  const heading=heroInner&&heroInner.querySelector('h1');
+  setText(heading,settings.heroTitle);
+  const heroParagraph=heroInner&&Array.from(heroInner.querySelectorAll('p')).find(p=>!p.classList.contains('trust-line')&&p!==eyebrow);
+  setText(heroParagraph,settings.heroDescription);
+  const about=document.querySelector('.about');
+  setText(about&&about.querySelector('h2'),settings.whyTitle);
+  setText(about&&about.querySelector('h2')&&about.querySelector('h2').parentElement.querySelector('p'),settings.whyDescription);
+  if(settings.seoTitle){document.title=String(settings.seoTitle)}
+  if(settings.seoDescription){
+    let meta=document.querySelector('meta[name="description"]');
+    if(!meta){meta=document.createElement('meta');meta.name='description';document.head.appendChild(meta)}
+    meta.content=String(settings.seoDescription);
+  }
+  const heroPhoto=safeImage(settings.heroBackground||settings.heroImage);
+  if(hero&&heroPhoto)hero.style.backgroundImage='linear-gradient(rgba(255,240,246,.45),rgba(255,249,252,.88)),url("'+heroPhoto+'")';
+  const aboutPhoto=safeImage(settings.whyBackground||settings.whyImage);
+  const aboutImg=document.querySelector('.about-img img');
+  if(aboutImg&&aboutPhoto)aboutImg.src=aboutPhoto;
+  const phone=String(settings.contactPhone||'').replace(/\D/g,'');
+  const whatsapp=String(settings.contactWhatsApp||'').replace(/\D/g,'');
+  document.querySelectorAll('[data-contact]').forEach(link=>{
+    const type=link.dataset.contact;
+    link.dataset.sitePhone=phone;
+    link.dataset.siteWhatsapp=whatsapp;
+  });
+}
+function renderProfiles(profiles){
+  if(!Array.isArray(profiles)||!profiles.length)return;
+  const section=document.getElementById('companions');
+  const grid=section&&section.querySelector('.grid');
+  const template=grid&&grid.querySelector('.card');
+  if(!grid||!template)return;
+  const visible=profiles.filter(p=>p&&p.active!==false&&String(p.name||'').trim());
+  if(!visible.length)return;
+  grid.replaceChildren();
+  visible.forEach(profile=>{
+    const card=template.cloneNode(true);
+    const name=String(profile.name||'Profile');
+    const id=String(profile.id||name);
+    const location=String(profile.location||'');
+    const description=String(profile.description||'');
+    const title=card.querySelector('h3');
+    const meta=card.querySelector('.meta');
+    const paragraph=card.querySelector('.card-body>p');
+    const img=card.querySelector('.card-img img');
+    const badge=card.querySelector('.badge');
+    setText(title,name);setText(meta,location||'Profile');setText(paragraph,description);
+    if(badge)badge.textContent='Profile';
+    if(img){
+      const photo=safeImage(profile.photo);
+      if(photo)img.src=photo;else img.removeAttribute('src');
+      img.alt=name+' profile photo';
+    }
+    const encoded=encodeURIComponent(name);
+    card.querySelectorAll('a').forEach(link=>{
+      if(link.hasAttribute('data-contact')){
+        link.dataset.profile=name;
+        link.dataset.profilePhone=String(profile.phone||'').replace(/\D/g,'');
+        link.dataset.profileWhatsapp=String(profile.whatsapp||'').replace(/\D/g,'');
+        link.href=link.dataset.contact==='call'?'tel:':'#';
+      }else if(link.textContent.trim()==='View Profile')link.href='booking.html?profile='+encoded+'#experience';
+      else if(link.textContent.trim()==='Incall')link.href='booking.html?profile='+encoded+'#incall';
+      else if(link.textContent.trim()==='Outcall')link.href='booking.html?profile='+encoded+'#outcall';
+      else if(link.textContent.trim()==='Full Night')link.href='booking.html?profile='+encoded+'#fullnight';
+    });
+    grid.appendChild(card);
+  });
+}
+document.addEventListener('click',event=>{
+  const link=event.target.closest&&event.target.closest('a[data-contact]');
+  if(!link)return;
+  event.preventDefault();
+  const type=link.dataset.contact;
+  const number=(type==='call'?(link.dataset.profilePhone||link.dataset.sitePhone):(link.dataset.profileWhatsapp||link.dataset.siteWhatsapp)).replace(/\D/g,'');
+  if(!number){alert('Please add a contact number in the Admin settings or profile first.');return}
+  if(type==='call')location.href='tel:+'+number;
+  else{
+    const message='Hello Satisfaction for U, I am enquiring about the '+(link.dataset.profile||'selected profile')+' profile.';
+    window.open('https://wa.me/'+number+'?text='+encodeURIComponent(message),'_blank','noopener');
+  }
+});
+async function loadHomepageData(){
+  try{
+    const response=await fetch('/api/data',{method:'GET',headers:{'Accept':'application/json'},cache:'no-store'});
+    if(!response.ok)throw new Error('Homepage data unavailable ('+response.status+').');
+    const payload=await response.json();
+    const data=payload&&payload.data&&typeof payload.data==='object'?payload.data:payload;
+    const settings=data&&data.settings&&typeof data.settings==='object'?data.settings:{};
+    const profiles=Array.isArray(data&&data.profiles)?data.profiles:[];
+    applySettings(settings);
+    renderProfiles(profiles);
+  }catch(error){
+    // Keep the original static HTML visible when the API is unavailable.
+    console.info('Using static homepage fallback:',error&&error.message?error.message:error);
+  }
+}
+loadHomepageData();
+
 </script></body></html>
