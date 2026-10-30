@@ -104,6 +104,34 @@ footer{background:#111116;color:#d7d7df;border-color:#292930}footer .logo{color:
 .overlay{background:rgba(0,0,0,.68)}.panel{background:#fff;color:#111116;border:1px solid #ed2381;border-radius:18px}.panel h2,.result{color:#ed2381}
 :focus-visible{outline:3px solid #ed2381;outline-offset:3px}
 @media(max-width:760px){.hero{padding-top:112px}.card{border-radius:16px}.card-img{height:clamp(230px,65vw,340px)}.card-body h3{font-size:clamp(1.7rem,7vw,2.25rem)}.hero h1{font-size:clamp(2.45rem,11vw,4.1rem)}}
+
+/* Final dark-mode overrides: kept last so every modern component switches cleanly */
+:root[data-theme="dark"]{color-scheme:dark;--bg:#101014;--bg2:#191920;--card:#202028;--gold:#ff4b9a;--rose:#ff83b8;--cream:#f7f4f7;--muted:#c8c2cc;--line:rgba(255,75,154,.28)}
+:root[data-theme="dark"] body{background:#101014;color:#f7f4f7}
+:root[data-theme="dark"] header{background:rgba(16,16,20,.96);border-color:#34313a;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+:root[data-theme="dark"] .logo,:root[data-theme="dark"] nav a,:root[data-theme="dark"] .burger{color:#f7f4f7}
+:root[data-theme="dark"] nav a:hover,:root[data-theme="dark"] .logo span{color:#ff4b9a}
+:root[data-theme="dark"] nav{background:rgba(16,16,20,.99)}
+:root[data-theme="dark"] .hero{background-color:#101014;color:#f7f4f7}
+:root[data-theme="dark"] .hero::before,:root[data-theme="dark"] .photo-finale::before{background:linear-gradient(135deg,rgba(12,12,16,.88),rgba(20,18,25,.80))}
+:root[data-theme="dark"] .hero h1,:root[data-theme="dark"] .sec-head h2,:root[data-theme="dark"] .about h2,:root[data-theme="dark"] .photo-finale h2,:root[data-theme="dark"] .quick-card h3,:root[data-theme="dark"] .card-body h3,:root[data-theme="dark"] .svc h3{color:#ff4b9a}
+:root[data-theme="dark"] .hero h1 em,:root[data-theme="dark"] .about h2 em{color:#fff}
+:root[data-theme="dark"] .hero p,:root[data-theme="dark"] .sec-head p,:root[data-theme="dark"] .about p,:root[data-theme="dark"] .card-body p,:root[data-theme="dark"] .svc p,:root[data-theme="dark"] .quick-card p,:root[data-theme="dark"] .contact-info p{color:#d0cbd3}
+:root[data-theme="dark"] .about,:root[data-theme="dark"] .quick-booking,:root[data-theme="dark"] .services,:root[data-theme="dark"] .contact{background:#191920}
+:root[data-theme="dark"] .card,:root[data-theme="dark"] .card-body,:root[data-theme="dark"] .quick-card,:root[data-theme="dark"] .svc,:root[data-theme="dark"] .panel{background:#202028;color:#f7f4f7;border-color:#39313b}
+:root[data-theme="dark"] .card{box-shadow:0 10px 30px rgba(0,0,0,.28)}
+:root[data-theme="dark"] .card-img,:root[data-theme="dark"] .about-img{background:#292630}
+:root[data-theme="dark"] .trust-line span,:root[data-theme="dark"] .trust-line strong{background:#202028;color:#ff83b8;border-color:#6b3452}
+:root[data-theme="dark"] .contact-line,:root[data-theme="dark"] footer{color:#c8c2cc;border-color:#39313b}
+:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea{background:#15151b;color:#f7f4f7;border-color:#51404b}
+:root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#aaa2ad}
+:root[data-theme="dark"] option{background:#202028;color:#f7f4f7}
+:root[data-theme="dark"] .btn{background:#202028;color:#ff83b8;border-color:#ff4b9a}
+:root[data-theme="dark"] .btn:hover,:root[data-theme="dark"] .btn.solid{background:#ff4b9a;color:#fff}
+:root[data-theme="dark"] .photo-finale{background-color:#101014}
+:root[data-theme="dark"] .overlay{background:rgba(0,0,0,.78)}
+:root[data-theme="dark"] .theme-toggle{background:#202028;color:#ff83b8;border-color:#ff4b9a}
+:root[data-theme="dark"] .small-link{color:#ff83b8}
 </style></head><body>
 <header><a class="logo" href="#home">Satisfaction for U</a><nav id="nav"><a href="#about">The Agency</a><a href="#companions">Companions</a></nav><button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch colour theme">Dark mode</button><button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false">☰</button></header>
 <main><div class="hero" id="home"><div class="hero-inner"><div class="kicker">SATISFACTION FOR U</div><p style="font-size:clamp(1rem,2.3vw,1.35rem);font-weight:600;letter-spacing:.04em;margin:0 auto 14px;color:var(--gold)">Call girls in Visakhapatnam (Vizag)</p><h1>Visakhapatnam VIP<br><em>Premium Escorts Services</em></h1><p class="trust-line"><strong>Cash Payment Only</strong><span>No Advance Payment</span><span>100% Genuine Services</span></p><p>Premium introductions and clear booking enquiries in Visakhapatnam.</p><div class="hero-actions"><a href="#companions" class="btn solid">Explore Profiles</a><a href="booking.html#incall" class="btn">Incall Booking</a><a href="booking.html#outcall" class="btn">Outcall Booking</a><a href="booking.html#fullnight" class="btn">Full Night Booking</a></div></div></div>
